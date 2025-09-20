@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example Site - Minilatics Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+        }
+        .code {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 1rem 0;
+        }
+        .admin-link {
+            background: #000;
+            color: #fff;
+            padding: 1rem;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Minilatics Demo Site</h1>
+    
+    <p>This is an example website with Minilatics tracking enabled.</p>
+    
+    <h2>Tracking Script Added</h2>
+    <p>The following script is included in this page:</p>
+    <div class="code">
+        &lt;script src="http://localhost:3000/script.js" data-site-key="demo-site"&gt;&lt;/script&gt;
+    </div>
+    
+    <h2>View Analytics</h2>
+    <p>Click the link below to see the analytics for this demo site:</p>
+    <a href="http://localhost:3000/admin/demo-site" class="admin-link">
+        View Demo Analytics
+    </a>
+    
+    <h2>Navigation</h2>
+    <p>Visit different pages to generate analytics data:</p>
+    <ul>
+        <li><a href="/about">About Page</a></li>
+        <li><a href="/contact">Contact Page</a></li>
+        <li><a href="/products">Products Page</a></li>
+    </ul>
+    
+    <h2>Privacy Notice</h2>
+    <p>This analytics system:</p>
+    <ul>
+        <li>Does not use cookies</li>
+        <li>Does not store IP addresses</li>
+        <li>Only tracks page views, unique visitors, referrers, and page paths</li>
+        <li>Uses anonymous hashing for visitor identification</li>
+    </ul>
+
+    <!-- Minilatics tracking script -->
+    <script src="http://localhost:3000/script.js" data-site-key="demo-site"></script>
+</body>
+</html>
