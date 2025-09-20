@@ -118,15 +118,15 @@ pm2 logs minilatics
 
 ## Usage After Deployment
 
-Once deployed to `https://your-domain.com`:
+Once deployed to `https://minilatics.onrender.com`:
 
 1. **Add to your website**:
    ```html
-   <script src="https://your-domain.com/script.js" data-site-key="your-unique-site-key"></script>
+   <script src="https://minilatics.onrender.com/script.js" data-site-key="your-unique-site-key"></script>
    ```
 
 2. **View analytics**:
-   Visit: `https://your-domain.com/admin/your-unique-site-key`
+   Visit: `https://minilatics.onrender.com/admin/your-unique-site-key`
 
 ## Security Considerations
 

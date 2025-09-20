@@ -24,11 +24,11 @@ A privacy-focused, minimal analytics solution. No cookies, no IP addresses, no t
 
 3. **Add tracking to your website**:
    ```html
-   <script src="http://your-domain.com/script.js" data-site-key="your-unique-site-key"></script>
+   <script src="https://minilatics.onrender.com/script.js" data-site-key="your-unique-site-key"></script>
    ```
 
 4. **View your stats**:
-   Visit: `http://your-domain.com/admin/your-unique-site-key`
+   Visit: `https://minilatics.onrender.com/admin/your-unique-site-key`
 
 ## How It Works
 
