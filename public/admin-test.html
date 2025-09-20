@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minilatics - Analytics</title>
+    <title>Minilatics - Analytics Demo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -33,6 +33,17 @@
             font-weight: 300;
             margin-bottom: 2rem;
             color: #fff;
+        }
+
+        .demo-badge {
+            background: #333;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 2rem;
+            border: 1px solid #555;
         }
 
         .stats-grid {
@@ -101,22 +112,6 @@
         .list-item-count {
             color: #999;
             font-size: 0.9rem;
-        }
-
-        .loading {
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-            padding: 2rem;
-        }
-
-        .error {
-            background: #111;
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 1.5rem;
-            color: #ff6b6b;
-            text-align: center;
         }
 
         .period-selector {
@@ -335,13 +330,17 @@
     <div class="container">
         <h1>Minilatics</h1>
         
+        <div class="demo-badge">
+            📊 Demo with Test Data
+        </div>
+        
         <div id="setup-screen">
             <div class="setup-container">
                 <div class="setup-title">🚀 Get Started</div>
                 <div class="setup-description">
                     Add this one line to your website to start tracking analytics:
                 </div>
-                <div class="script-display" id="script-code"></div>
+                <div class="script-display">&lt;script src="https://minilatics.onrender.com/script.js" data-site-key="demo-site"&gt;&lt;/script&gt;</div>
                 <button class="verify-button" id="verify-button" onclick="verifyTracking()">
                     Verify Tracking Script
                 </button>
@@ -357,18 +356,15 @@
                     <option value="90">Last 90 days</option>
                 </select>
             </div>
-
-            <div id="loading" class="loading">Loading analytics...</div>
-            <div id="error" class="error" style="display: none;"></div>
         
-        <div id="stats" style="display: none;">
+            <div id="stats">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="total-views">0</div>
+                    <div class="stat-number" id="total-views">2,847</div>
                     <div class="stat-label">Page Views</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="unique-visitors">0</div>
+                    <div class="stat-number" id="unique-visitors">1,329</div>
                     <div class="stat-label">Unique Visitors</div>
                 </div>
             </div>
@@ -393,26 +389,64 @@
             <div class="section">
                 <h2>Top Pages</h2>
                 <div class="list" id="top-pages">
-                    <!-- Populated by JavaScript -->
+                    <div class="list-item">
+                        <div class="list-item-main">/</div>
+                        <div class="list-item-count">892 views</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">/about</div>
+                        <div class="list-item-count">456 views</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">/blog</div>
+                        <div class="list-item-count">321 views</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">/contact</div>
+                        <div class="list-item-count">278 views</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">/projects</div>
+                        <div class="list-item-count">234 views</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">/blog/first-post</div>
+                        <div class="list-item-count">189 views</div>
+                    </div>
                 </div>
             </div>
 
             <div class="section">
                 <h2>Top Referrers</h2>
                 <div class="list" id="top-referrers">
-                    <!-- Populated by JavaScript -->
+                    <div class="list-item">
+                        <div class="list-item-main">https://google.com</div>
+                        <div class="list-item-count">534 visits</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">https://twitter.com</div>
+                        <div class="list-item-count">287 visits</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">https://github.com</div>
+                        <div class="list-item-count">198 visits</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">https://linkedin.com</div>
+                        <div class="list-item-count">156 visits</div>
+                    </div>
+                    <div class="list-item">
+                        <div class="list-item-main">https://dev.to</div>
+                        <div class="list-item-count">89 visits</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const siteKey = window.location.pathname.split('/')[2] || 'your-site-key';
-        const baseUrl = window.location.origin;
+        const siteKey = 'demo-site';
         
-        // Set the tracking script code
-        document.getElementById('script-code').textContent = `<script src="${baseUrl}/script.js" data-site-key="${siteKey}"></script>`;
-
         // Check if tracking has been verified (stored in localStorage)
         const isTrackingVerified = localStorage.getItem(`tracking_verified_${siteKey}`) === 'true';
         
@@ -440,40 +474,21 @@
             button.textContent = 'Verifying...';
             statusEl.style.display = 'block';
             statusEl.className = 'verification-status verification-waiting';
-            statusEl.innerHTML = '⏳ Checking for tracking data...';
+            statusEl.innerHTML = '⏳ Simulating verification check...';
 
-            try {
-                // Check if there's any data for this site key
-                const response = await fetch(`${baseUrl}/stats/${siteKey}?days=1`);
-                const data = await response.json();
-
-                if (response.ok && data.total_views > 0) {
-                    // Success - tracking is working
-                    statusEl.className = 'verification-status verification-success';
-                    statusEl.innerHTML = '✅ Tracking script verified! Found ' + data.total_views + ' page views.';
-                    
-                    // Store verification in localStorage
-                    localStorage.setItem(`tracking_verified_${siteKey}`, 'true');
-                    
-                    // Switch to analytics after a short delay
-                    setTimeout(() => {
-                        showAnalytics();
-                    }, 2000);
-                    
-                } else {
-                    // No data found
-                    statusEl.className = 'verification-status verification-error';
-                    statusEl.innerHTML = '❌ No tracking data found. Make sure you\'ve added the script to your website and visited at least one page.';
-                    button.disabled = false;
-                    button.textContent = 'Verify Tracking Script';
-                }
-            } catch (error) {
-                // Network or other error
-                statusEl.className = 'verification-status verification-error';
-                statusEl.innerHTML = '❌ Verification failed. Please check your connection and try again.';
-                button.disabled = false;
-                button.textContent = 'Verify Tracking Script';
-            }
+            // Simulate verification process with demo data
+            setTimeout(() => {
+                statusEl.className = 'verification-status verification-success';
+                statusEl.innerHTML = '✅ Tracking script verified! Found demo data with 2,847 page views.';
+                
+                // Store verification in localStorage
+                localStorage.setItem(`tracking_verified_${siteKey}`, 'true');
+                
+                // Switch to analytics after a short delay
+                setTimeout(() => {
+                    showAnalytics();
+                }, 2000);
+            }, 2000);
         }
 
         // Add a reset function for testing
@@ -489,72 +504,49 @@
             }
         });
 
-        async function loadStats() {
-            const days = document.getElementById('period-select').value;
-            const loadingEl = document.getElementById('loading');
-            const errorEl = document.getElementById('error');
-            const statsEl = document.getElementById('stats');
-
-            loadingEl.style.display = 'block';
-            errorEl.style.display = 'none';
-            statsEl.style.display = 'none';
-
-            try {
-                const response = await fetch(`${baseUrl}/stats/${siteKey}?days=${days}`);
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error || 'Failed to load stats');
-                }
-
-                // Update stats
-                document.getElementById('total-views').textContent = data.total_views.toLocaleString();
-                document.getElementById('unique-visitors').textContent = data.unique_visitors.toLocaleString();
-
-                // Update top pages
-                const pagesEl = document.getElementById('top-pages');
-                pagesEl.innerHTML = '';
-                data.top_pages.forEach(page => {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = `
-                        <div class="list-item-main">${page.page_path}</div>
-                        <div class="list-item-count">${page.views} views</div>
-                    `;
-                    pagesEl.appendChild(item);
+        // Generate realistic test data
+        function generateTestData(days) {
+            const dailyViews = [];
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - parseInt(days));
+            
+            for (let i = 0; i < parseInt(days); i++) {
+                const date = new Date(startDate);
+                date.setDate(date.getDate() + i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                // Generate realistic view patterns (weekends lower, some random spikes)
+                const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+                const baseViews = isWeekend ? 20 : 60;
+                const randomFactor = Math.random() * 40;
+                const trendFactor = (i / days) * 20; // Slight upward trend
+                const views = Math.round(baseViews + randomFactor + trendFactor + (Math.random() > 0.9 ? 50 : 0));
+                
+                dailyViews.push({
+                    date: dateStr,
+                    views: views
                 });
-
-                // Update top referrers
-                const referrersEl = document.getElementById('top-referrers');
-                referrersEl.innerHTML = '';
-                if (data.top_referrers.length === 0) {
-                    const item = document.createElement('div');
-                    item.className = 'list-item';
-                    item.innerHTML = '<div class="list-item-main" style="color: #666;">No referrers</div>';
-                    referrersEl.appendChild(item);
-                } else {
-                    data.top_referrers.forEach(referrer => {
-                        const item = document.createElement('div');
-                        item.className = 'list-item';
-                        item.innerHTML = `
-                            <div class="list-item-main">${referrer.referrer}</div>
-                            <div class="list-item-count">${referrer.visits} visits</div>
-                        `;
-                        referrersEl.appendChild(item);
-                    });
-                }
-
-                // Render the chart
-                renderPageViewsChart(data.daily_views, days);
-
-                loadingEl.style.display = 'none';
-                statsEl.style.display = 'block';
-
-            } catch (error) {
-                loadingEl.style.display = 'none';
-                errorEl.style.display = 'block';
-                errorEl.textContent = error.message;
             }
+            
+            return dailyViews;
+        }
+
+        function loadStats() {
+            const days = document.getElementById('period-select').value;
+            
+            // Update stats based on period
+            const stats = {
+                7: { views: 892, visitors: 345 },
+                30: { views: 2847, visitors: 1329 },
+                90: { views: 8924, visitors: 3892 }
+            };
+            
+            document.getElementById('total-views').textContent = stats[days].views.toLocaleString();
+            document.getElementById('unique-visitors').textContent = stats[days].visitors.toLocaleString();
+            
+            // Generate and render chart with test data
+            const testData = generateTestData(days);
+            renderPageViewsChart(testData, days);
         }
 
         function renderPageViewsChart(dailyViews, days) {
@@ -570,26 +562,10 @@
             const width = 700 - margin.left - margin.right;
             const height = 260 - margin.top - margin.bottom;
 
-            // Fill in missing days with 0 views
-            const allDays = [];
-            const startDate = new Date();
-            startDate.setDate(startDate.getDate() - parseInt(days));
-            
-            for (let i = 0; i < parseInt(days); i++) {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
-                const existingDay = dailyViews.find(d => d.date === dateStr);
-                allDays.push({
-                    date: dateStr,
-                    views: existingDay ? existingDay.views : 0
-                });
-            }
-
-            const maxViews = Math.max(...allDays.map(d => d.views), 1);
+            const maxViews = Math.max(...dailyViews.map(d => d.views), 1);
             
             // Create scales
-            const xScale = (i) => margin.left + (i / (allDays.length - 1)) * width;
+            const xScale = (i) => margin.left + (i / (dailyViews.length - 1)) * width;
             const yScale = (value) => margin.top + height - (value / maxViews) * height;
 
             // Create main group
@@ -627,7 +603,7 @@
 
             // Create path for area fill
             let areaPath = `M ${margin.left} ${margin.top + height}`;
-            allDays.forEach((d, i) => {
+            dailyViews.forEach((d, i) => {
                 const x = xScale(i);
                 const y = yScale(d.views);
                 if (i === 0) {
@@ -645,7 +621,7 @@
 
             // Create hand-drawn line path with slight irregularities
             let linePath = '';
-            allDays.forEach((d, i) => {
+            dailyViews.forEach((d, i) => {
                 const x = xScale(i) + (Math.random() - 0.5) * 2; // Add slight randomness
                 const y = yScale(d.views) + (Math.random() - 0.5) * 2;
                 
@@ -654,7 +630,7 @@
                 } else {
                     // Use quadratic curves for smoother hand-drawn look
                     const prevX = xScale(i - 1) + (Math.random() - 0.5) * 2;
-                    const prevY = yScale(allDays[i - 1].views) + (Math.random() - 0.5) * 2;
+                    const prevY = yScale(dailyViews[i - 1].views) + (Math.random() - 0.5) * 2;
                     const midX = (prevX + x) / 2;
                     const midY = (prevY + y) / 2;
                     linePath += ` Q ${midX + (Math.random() - 0.5) * 4} ${midY + (Math.random() - 0.5) * 4} ${x} ${y}`;
@@ -667,7 +643,7 @@
             g.appendChild(line);
 
             // Add data points
-            allDays.forEach((d, i) => {
+            dailyViews.forEach((d, i) => {
                 const x = xScale(i);
                 const y = yScale(d.views);
                 
@@ -708,9 +684,9 @@
             }
 
             // Add X-axis labels (show every few days)
-            const labelInterval = Math.max(1, Math.floor(allDays.length / 6));
-            allDays.forEach((d, i) => {
-                if (i % labelInterval === 0 || i === allDays.length - 1) {
+            const labelInterval = Math.max(1, Math.floor(dailyViews.length / 6));
+            dailyViews.forEach((d, i) => {
+                if (i % labelInterval === 0 || i === dailyViews.length - 1) {
                     const x = xScale(i);
                     const date = new Date(d.date);
                     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
