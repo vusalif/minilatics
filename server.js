@@ -93,27 +93,36 @@ app.get('/stats/:site_key', (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      // Get page paths
-      db.all(`SELECT page_path, COUNT(*) as views FROM analytics WHERE site_key = ? AND timestamp >= ? GROUP BY page_path ORDER BY views DESC LIMIT 10`, 
-        [site_key, startDate.toISOString()], (err, pagesResult) => {
+      // Get daily page views for chart
+      db.all(`SELECT DATE(timestamp) as date, COUNT(*) as views FROM analytics WHERE site_key = ? AND timestamp >= ? GROUP BY DATE(timestamp) ORDER BY date`, 
+        [site_key, startDate.toISOString()], (err, dailyViewsResult) => {
         if (err) {
           return res.status(500).json({ error: 'Database error' });
         }
 
-        // Get referrers
-        db.all(`SELECT referrer, COUNT(*) as visits FROM analytics WHERE site_key = ? AND timestamp >= ? AND referrer IS NOT NULL GROUP BY referrer ORDER BY visits DESC LIMIT 10`, 
-          [site_key, startDate.toISOString()], (err, referrersResult) => {
+        // Get page paths
+        db.all(`SELECT page_path, COUNT(*) as views FROM analytics WHERE site_key = ? AND timestamp >= ? GROUP BY page_path ORDER BY views DESC LIMIT 10`, 
+          [site_key, startDate.toISOString()], (err, pagesResult) => {
           if (err) {
             return res.status(500).json({ error: 'Database error' });
           }
 
-          res.json({
-            site_key,
-            period_days: days,
-            total_views: viewsResult[0].views,
-            unique_visitors: visitorsResult[0].unique_visitors,
-            top_pages: pagesResult,
-            top_referrers: referrersResult
+          // Get referrers
+          db.all(`SELECT referrer, COUNT(*) as visits FROM analytics WHERE site_key = ? AND timestamp >= ? AND referrer IS NOT NULL GROUP BY referrer ORDER BY visits DESC LIMIT 10`, 
+            [site_key, startDate.toISOString()], (err, referrersResult) => {
+            if (err) {
+              return res.status(500).json({ error: 'Database error' });
+            }
+
+            res.json({
+              site_key,
+              period_days: days,
+              total_views: viewsResult[0].views,
+              unique_visitors: visitorsResult[0].unique_visitors,
+              daily_views: dailyViewsResult,
+              top_pages: pagesResult,
+              top_referrers: referrersResult
+            });
           });
         });
       });
