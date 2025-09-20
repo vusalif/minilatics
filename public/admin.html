@@ -587,12 +587,11 @@
 
             // Fill in missing days with 0 views
             const allDays = [];
-            const startDate = new Date();
-            startDate.setDate(startDate.getDate() - parseInt(days));
+            const endDate = new Date();
             
-            for (let i = 0; i < parseInt(days); i++) {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
+            for (let i = parseInt(days) - 1; i >= 0; i--) {
+                const date = new Date(endDate);
+                date.setDate(date.getDate() - i);
                 const dateStr = date.toISOString().split('T')[0];
                 const existingDay = dailyViews.find(d => d.date === dateStr);
                 allDays.push({
