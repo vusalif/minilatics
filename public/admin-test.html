@@ -507,19 +507,22 @@
         // Generate realistic test data
         function generateTestData(days) {
             const dailyViews = [];
-            const startDate = new Date();
-            startDate.setDate(startDate.getDate() - parseInt(days));
+            const endDate = new Date();
             
-            for (let i = 0; i < parseInt(days); i++) {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
+            for (let i = parseInt(days) - 1; i >= 0; i--) {
+                const date = new Date(endDate);
+                date.setDate(date.getDate() - i);
+                // Use local date instead of UTC to avoid timezone issues
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const dateStr = `${year}-${month}-${day}`;
                 
                 // Generate realistic view patterns (weekends lower, some random spikes)
                 const isWeekend = date.getDay() === 0 || date.getDay() === 6;
                 const baseViews = isWeekend ? 20 : 60;
                 const randomFactor = Math.random() * 40;
-                const trendFactor = (i / days) * 20; // Slight upward trend
+                const trendFactor = ((parseInt(days) - 1 - i) / days) * 20; // Slight upward trend
                 const views = Math.round(baseViews + randomFactor + trendFactor + (Math.random() > 0.9 ? 50 : 0));
                 
                 dailyViews.push({
@@ -654,12 +657,11 @@
                 
                 // Add hover effects
                 dot.addEventListener('mouseenter', (e) => {
-                    const rect = svg.getBoundingClientRect();
                     const date = new Date(d.date).toLocaleDateString();
                     tooltip.innerHTML = `${date}<br/>${d.views} views`;
                     tooltip.style.display = 'block';
-                    tooltip.style.left = (e.clientX - rect.left + 10) + 'px';
-                    tooltip.style.top = (e.clientY - rect.top - 40) + 'px';
+                    tooltip.style.left = (e.pageX + 10) + 'px';
+                    tooltip.style.top = (e.pageY - 10) + 'px';
                 });
                 
                 dot.addEventListener('mouseleave', () => {
