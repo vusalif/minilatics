@@ -407,11 +407,19 @@
     </div>
 
     <script>
+        console.log('Script started loading...');
+        
         const siteKey = window.location.pathname.split('/')[2] || 'your-site-key';
         const baseUrl = window.location.origin;
         
+        console.log('Variables initialized:', { siteKey, baseUrl });
+        
         // Set the tracking script code
-        document.getElementById('script-code').textContent = `<script src="${baseUrl}/script.js" data-site-key="${siteKey}"></script>`;
+        try {
+            document.getElementById('script-code').textContent = '<script src="' + baseUrl + '/script.js" data-site-key="' + siteKey + '"><\/script>';
+        } catch (error) {
+            console.error('Error setting script content:', error);
+        }
 
         // Check if tracking has been verified (stored in localStorage)
         const isTrackingVerified = localStorage.getItem(`tracking_verified_${siteKey}`) === 'true';
@@ -419,6 +427,13 @@
         if (isTrackingVerified) {
             showAnalytics();
         }
+
+        // Debug: Log that functions are loaded
+        console.log('Functions loaded:', {
+            verifyTracking: typeof verifyTracking,
+            loadStats: typeof loadStats,
+            showAnalytics: typeof showAnalytics
+        });
 
         function showSetupScreen() {
             document.getElementById('setup-screen').style.display = 'block';
@@ -724,10 +739,12 @@
             });
 
             // Set SVG viewBox for responsiveness
-            svg.setAttribute('viewBox', `0 0 700 300`);
+            svg.setAttribute('viewBox', '0 0 700 300');
         }
 
         // Don't auto-load stats anymore - only load after verification
+        
+        console.log('Script loaded completely!');
     </script>
 </body>
 </html>
