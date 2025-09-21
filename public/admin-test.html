@@ -116,6 +116,10 @@
 
         .period-selector {
             margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
         .period-selector select {
@@ -130,6 +134,49 @@
         .period-selector select:focus {
             outline: none;
             border-color: #666;
+        }
+
+        #active-users-text {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            color: #999;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            
+        }
+
+        #active-users {
+            color: #fff;
+            font-weight: 500;
+            width: 30px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+            70% {
+                opacity: 1;
+                box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+            }
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
         }
 
         .copy-link {
@@ -324,16 +371,62 @@
             color: #fbbf24;
             border: 1px solid #f59e0b;
         }
+
+        .toggle-line {
+            position: relative;
+            margin: 2rem 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-divider {
+            border: none;
+            height: 1px;
+            background: #333;
+            margin: 0;
+        }
+
+        .toggle-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: #999;
+            padding: 0 1rem;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-line:hover .toggle-text {
+            color: #fff;
+        }
+
+        .toggle-line:hover .section-divider {
+            background: #666;
+        }
+
+        .details-sections {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .details-sections.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .details-sections.expanded {
+            max-height: 1000px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Minilatics</h1>
         
-        <div class="demo-badge">
-            📊 Demo with Test Data
-        </div>
-        
+  
         <div id="setup-screen">
             <div class="setup-container">
                 <div class="setup-title">🚀 Get Started</div>
@@ -350,6 +443,10 @@
 
         <div id="analytics-screen" style="display: none;">
             <div class="period-selector">
+                <span id="active-users-text">
+                    <span class="live-dot"></span>
+                    Active Users: <span id="active-users">892</span>
+                </span>
                 <select id="period-select" onchange="loadStats()">
                     <option value="7">Last 7 days</option>
                     <option value="30" selected>Last 30 days</option>
@@ -370,7 +467,7 @@
             </div>
 
             <div class="chart-container">
-                <div class="chart-title">Page Views Over Time</div>
+                <div class="chart-title"></div>
                 <svg class="chart-svg" id="pageViewsChart">
                     <defs>
                         <filter id="roughPaper" x="0%" y="0%" width="100%" height="100%">
@@ -386,58 +483,65 @@
                 <div class="chart-tooltip" id="tooltip"></div>
             </div>
 
-            <div class="section">
-                <h2>Top Pages</h2>
-                <div class="list" id="top-pages">
-                    <div class="list-item">
-                        <div class="list-item-main">/</div>
-                        <div class="list-item-count">892 views</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">/about</div>
-                        <div class="list-item-count">456 views</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">/blog</div>
-                        <div class="list-item-count">321 views</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">/contact</div>
-                        <div class="list-item-count">278 views</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">/projects</div>
-                        <div class="list-item-count">234 views</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">/blog/first-post</div>
-                        <div class="list-item-count">189 views</div>
-                    </div>
-                </div>
+            <div class="toggle-line" id="toggle-details" onclick="toggleDetails()">
+                <hr class="section-divider">
+                <span class="toggle-text">Show More Details</span>
             </div>
 
-            <div class="section">
-                <h2>Top Referrers</h2>
-                <div class="list" id="top-referrers">
-                    <div class="list-item">
-                        <div class="list-item-main">https://google.com</div>
-                        <div class="list-item-count">534 visits</div>
+            <div class="details-sections collapsed" id="details-sections">
+                <div class="section">
+                    <h2>Top Pages</h2>
+                    <div class="list" id="top-pages">
+                        <div class="list-item">
+                            <div class="list-item-main">/</div>
+                            <div class="list-item-count">892 views</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">/about</div>
+                            <div class="list-item-count">456 views</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">/blog</div>
+                            <div class="list-item-count">321 views</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">/contact</div>
+                            <div class="list-item-count">278 views</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">/projects</div>
+                            <div class="list-item-count">234 views</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">/blog/first-post</div>
+                            <div class="list-item-count">189 views</div>
+                        </div>
                     </div>
-                    <div class="list-item">
-                        <div class="list-item-main">https://twitter.com</div>
-                        <div class="list-item-count">287 visits</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">https://github.com</div>
-                        <div class="list-item-count">198 visits</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">https://linkedin.com</div>
-                        <div class="list-item-count">156 visits</div>
-                    </div>
-                    <div class="list-item">
-                        <div class="list-item-main">https://dev.to</div>
-                        <div class="list-item-count">89 visits</div>
+                </div>
+
+                <div class="section">
+                    <h2>Top Referrers</h2>
+                    <div class="list" id="top-referrers">
+                        <div class="list-item">
+                            <div class="list-item-main">Google (Organic Search)</div>
+                            <div class="list-item-count">534 visits</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">Twitter/X</div>
+                            <div class="list-item-count">287 visits</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">github.com</div>
+                            <div class="list-item-count">198 visits</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">LinkedIn</div>
+                            <div class="list-item-count">156 visits</div>
+                        </div>
+                        <div class="list-item">
+                            <div class="list-item-main">Direct</div>
+                            <div class="list-item-count">89 visits</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -539,13 +643,14 @@
             
             // Update stats based on period
             const stats = {
-                7: { views: 892, visitors: 345 },
-                30: { views: 2847, visitors: 1329 },
-                90: { views: 8924, visitors: 3892 }
+                7: { views: 892, visitors: 345, active: 289 },
+                30: { views: 2847, visitors: 1329, active: 892 },
+                90: { views: 8924, visitors: 3892, active: 2156 }
             };
             
             document.getElementById('total-views').textContent = stats[days].views.toLocaleString();
             document.getElementById('unique-visitors').textContent = stats[days].visitors.toLocaleString();
+            document.getElementById('active-users').textContent = stats[days].active.toLocaleString();
             
             // Generate and render chart with test data
             const testData = generateTestData(days);
@@ -706,6 +811,21 @@
         }
 
         // Don't auto-load stats anymore - only load after verification
+        
+        function toggleDetails() {
+            const detailsSection = document.getElementById('details-sections');
+            const toggleText = document.querySelector('.toggle-text');
+            
+            if (detailsSection.classList.contains('collapsed')) {
+                detailsSection.classList.remove('collapsed');
+                detailsSection.classList.add('expanded');
+                toggleText.textContent = 'Hide Details';
+            } else {
+                detailsSection.classList.remove('expanded');
+                detailsSection.classList.add('collapsed');
+                toggleText.textContent = 'Show More Details';
+            }
+        }
     </script>
 </body>
 </html>

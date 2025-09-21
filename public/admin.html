@@ -121,6 +121,10 @@
 
         .period-selector {
             margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
         .period-selector select {
@@ -135,6 +139,47 @@
         .period-selector select:focus {
             outline: none;
             border-color: #666;
+        }
+
+        #active-users-text {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            color: #999;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #active-users {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+            }
+            70% {
+                opacity: 1;
+                box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+            }
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
         }
 
         .copy-link {
@@ -329,6 +374,55 @@
             color: #fbbf24;
             border: 1px solid #f59e0b;
         }
+
+        .toggle-line {
+            position: relative;
+            margin: 2rem 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-divider {
+            border: none;
+            height: 1px;
+            background: #333;
+            margin: 0;
+        }
+
+        .toggle-text {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            color: #999;
+            padding: 0 1rem;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-line:hover .toggle-text {
+            color: #fff;
+        }
+
+        .toggle-line:hover .section-divider {
+            background: #666;
+        }
+
+        .details-sections {
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .details-sections.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .details-sections.expanded {
+            max-height: 1000px;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -351,6 +445,10 @@
 
         <div id="analytics-screen" style="display: none;">
             <div class="period-selector">
+                <span id="active-users-text">
+                    <span class="live-dot"></span>
+                    Active Users: <span id="active-users">0</span>
+                </span>
                 <select id="period-select" onchange="loadStats()">
                     <option value="7">Last 7 days</option>
                     <option value="30" selected>Last 30 days</option>
@@ -390,17 +488,24 @@
                 <div class="chart-tooltip" id="tooltip"></div>
             </div>
 
-            <div class="section">
-                <h2>Top Pages</h2>
-                <div class="list" id="top-pages">
-                    <!-- Populated by JavaScript -->
-                </div>
+            <div class="toggle-line" id="toggle-details" onclick="toggleDetails()">
+                <hr class="section-divider">
+                <span class="toggle-text">Show More Details</span>
             </div>
 
-            <div class="section">
-                <h2>Top Referrers</h2>
-                <div class="list" id="top-referrers">
-                    <!-- Populated by JavaScript -->
+            <div class="details-sections collapsed" id="details-sections">
+                <div class="section">
+                    <h2>Top Pages</h2>
+                    <div class="list" id="top-pages">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Top Referrers</h2>
+                    <div class="list" id="top-referrers">
+                        <!-- Populated by JavaScript -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -434,6 +539,51 @@
             loadStats: typeof loadStats,
             showAnalytics: typeof showAnalytics
         });
+
+        // Function to format referrer names
+        function formatReferrer(referrer) {
+            if (!referrer || referrer === '' || referrer === 'null' || referrer === 'undefined') {
+                return 'Direct';
+            }
+            
+            // Handle Google searches
+            if (referrer.includes('google.com') || referrer.includes('google.') || referrer.includes('www.google')) {
+                return 'Google (Organic Search)';
+            }
+            
+            // Handle other search engines
+            if (referrer.includes('bing.com') || referrer.includes('bing.')) {
+                return 'Bing (Organic Search)';
+            }
+            if (referrer.includes('yahoo.com') || referrer.includes('yahoo.')) {
+                return 'Yahoo (Organic Search)';
+            }
+            if (referrer.includes('duckduckgo.com')) {
+                return 'DuckDuckGo (Organic Search)';
+            }
+            
+            // Handle social media
+            if (referrer.includes('facebook.com') || referrer.includes('fb.com')) {
+                return 'Facebook';
+            }
+            if (referrer.includes('twitter.com') || referrer.includes('t.co')) {
+                return 'Twitter/X';
+            }
+            if (referrer.includes('linkedin.com')) {
+                return 'LinkedIn';
+            }
+            if (referrer.includes('instagram.com')) {
+                return 'Instagram';
+            }
+            
+            // For other referrers, try to extract the domain name
+            try {
+                const url = new URL(referrer.startsWith('http') ? referrer : 'https://' + referrer);
+                return url.hostname.replace('www.', '');
+            } catch {
+                return referrer;
+            }
+        }
 
         function showSetupScreen() {
             document.getElementById('setup-screen').style.display = 'block';
@@ -510,6 +660,8 @@
             const errorEl = document.getElementById('error');
             const statsEl = document.getElementById('stats');
 
+            console.log(`Loading stats for ${siteKey} (${days} days) from ${baseUrl}`);
+            
             loadingEl.style.display = 'block';
             errorEl.style.display = 'none';
             statsEl.style.display = 'none';
@@ -517,6 +669,8 @@
             try {
                 const response = await fetch(`${baseUrl}/stats/${siteKey}?days=${days}`);
                 const data = await response.json();
+                
+                console.log('Received analytics data:', data);
 
                 if (!response.ok) {
                     throw new Error(data.error || 'Failed to load stats');
@@ -525,6 +679,7 @@
                 // Update stats
                 document.getElementById('total-views').textContent = data.total_views.toLocaleString();
                 document.getElementById('unique-visitors').textContent = data.unique_visitors.toLocaleString();
+                document.getElementById('active-users').textContent = (data.active_users || data.unique_visitors || 0).toLocaleString();
 
                 // Update top pages
                 const pagesEl = document.getElementById('top-pages');
@@ -545,14 +700,18 @@
                 if (data.top_referrers.length === 0) {
                     const item = document.createElement('div');
                     item.className = 'list-item';
-                    item.innerHTML = '<div class="list-item-main" style="color: #666;">No referrers</div>';
+                    item.innerHTML = `
+                        <div class="list-item-main">Direct</div>
+                        <div class="list-item-count">No referrer data</div>
+                    `;
                     referrersEl.appendChild(item);
                 } else {
                     data.top_referrers.forEach(referrer => {
                         const item = document.createElement('div');
                         item.className = 'list-item';
+                        const formattedReferrer = formatReferrer(referrer.referrer);
                         item.innerHTML = `
-                            <div class="list-item-main">${referrer.referrer}</div>
+                            <div class="list-item-main">${formattedReferrer}</div>
                             <div class="list-item-count">${referrer.visits} visits</div>
                         `;
                         referrersEl.appendChild(item);
@@ -745,6 +904,21 @@
         }
 
         // Don't auto-load stats anymore - only load after verification
+        
+        function toggleDetails() {
+            const detailsSection = document.getElementById('details-sections');
+            const toggleText = document.querySelector('.toggle-text');
+            
+            if (detailsSection.classList.contains('collapsed')) {
+                detailsSection.classList.remove('collapsed');
+                detailsSection.classList.add('expanded');
+                toggleText.textContent = 'Hide Details';
+            } else {
+                detailsSection.classList.remove('expanded');
+                detailsSection.classList.add('collapsed');
+                toggleText.textContent = 'Show More Details';
+            }
+        }
         
         console.log('Script loaded completely!');
     </script>
